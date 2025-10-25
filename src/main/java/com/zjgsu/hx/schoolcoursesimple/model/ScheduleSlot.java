@@ -16,7 +16,7 @@ public class ScheduleSlot {
         this.setCreateAt();
     }
 
-    public ScheduleSlot(String dayOfWeek, String startTime, String endTime, int expectedAttendance, LocalDateTime createAt) {
+    public ScheduleSlot(String dayOfWeek, String startTime, String endTime, int expectedAttendance) {
         this.setId();
         this.setDayOfWeek(dayOfWeek);
         this.setStartTime(startTime);

@@ -17,7 +17,7 @@ public class Student {
         this.setCreateAt();
     }
 
-    public Student(String id, String studentId, String name, String major, int grade, String email, LocalDateTime createAt) {
+    public Student(String studentId, String name, String major, int grade, String email) {
         this.setId();
         this.setCreateAt();
         this.studentId = studentId;
