@@ -3,6 +3,7 @@ package com.zjgsu.hx.schoolcoursesimple.service;
 import com.zjgsu.hx.schoolcoursesimple.exception.ResourceConflictException;
 import com.zjgsu.hx.schoolcoursesimple.exception.ResourceNotFoundException;
 import com.zjgsu.hx.schoolcoursesimple.model.Course;
+import com.zjgsu.hx.schoolcoursesimple.model.ScheduleSlot;
 import com.zjgsu.hx.schoolcoursesimple.repository.CourseRepository;
 import com.zjgsu.hx.schoolcoursesimple.repository.EnrollmentRepository;
 import org.springframework.stereotype.Service;
@@ -41,11 +42,18 @@ public class CourseService {
         if (course.getCourseId() == null || course.getTitle() == null) {
             throw new IllegalArgumentException("课程代码和名称不能为空！");
         }
+        ScheduleSlot slot=existing.getScheduleSlot();
         existing.setCourseId(course.getCourseId());
         existing.setTitle(course.getTitle());
         existing.setInstructor(course.getInstructor());
         existing.setCapacity(course.getCapacity());
-        existing.setScheduleSlot(course.getScheduleSlot());
+        //existing.setScheduleSlot(course.getScheduleSlot());
+        slot.setDayOfWeek(course.getScheduleSlot().getDayOfWeek());
+        slot.setEndTime(course.getScheduleSlot().getEndTime());
+        slot.setStartTime(course.getScheduleSlot().getStartTime());
+        slot.setExpectedAttendance(course.getScheduleSlot().getExpectedAttendance());
+        existing.setScheduleSlot(slot);
+
         return courseRepository.save(existing);
     }
     public Course deleteById(String id) {

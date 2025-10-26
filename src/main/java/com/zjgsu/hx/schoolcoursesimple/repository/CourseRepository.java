@@ -21,6 +21,12 @@ public class CourseRepository {
         return Optional.ofNullable(courses.get(id));
     }
 
+    public Optional<Course> findByCourseId(String courseId) {
+        return courses.values().stream()
+                .filter(s -> s.getCourseId().equals(courseId))
+                .findFirst();
+    }
+
     public Course save(Course course) {
         return courses.put(course.getId(), course);
     }

@@ -36,16 +36,16 @@ public class EnrollmentService {
      */
     public Enrollment createEnrollment(String studentId, String courseId) {
         Student student = studentRepository.findByStudentId(studentId)
-                .orElseThrow(() -> new ResourceNotFoundException("学生不存在"));
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new ResourceNotFoundException("课程不存在"));
+                .orElseThrow(() -> new ResourceNotFoundException("学生不存在！"));
+        Course course = courseRepository.findByCourseId(courseId)
+                .orElseThrow(() -> new ResourceNotFoundException("课程不存在!"));
         boolean alreadyEnrolled = enrollmentRepository.findByStudentId(studentId).stream()
                 .anyMatch(e -> e.getCourseId().equals(courseId));
         if (alreadyEnrolled) {
-            throw new IllegalArgumentException("该学生已选过此课程");
+            throw new IllegalArgumentException("该学生已选过此课程!");
         }
         if (course.getEnrolled() >= course.getCapacity()) {
-            throw new ResourceConflictException("选课失败：课程容量已满");
+            throw new ResourceConflictException("选课失败：课程容量已满!");
         }
 
         Enrollment enrollment = new Enrollment();
