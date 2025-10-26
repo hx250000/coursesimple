@@ -26,6 +26,7 @@ public class Course {
         this.instructor = instructor;
         this.scheduleSlot = scheduleSlot;
         this.capacity = capacity;
+        this.enrolled = 0;
     }
 
     public String getId() {
