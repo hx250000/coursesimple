@@ -26,6 +26,7 @@ public class CourseService {
         return courseRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("课程不存在！"));
     }
     public Course createCourse(Course course) {
+        validateCourse(course, true);
         if (course.getCourseId() == null || course.getTitle() == null) {
             throw new IllegalArgumentException("课程代码和名称不能为空！");
         }
@@ -37,6 +38,7 @@ public class CourseService {
         return courseRepository.save(course);
     }
     public Course updateCourse(Course course) {
+        validateCourse(course, false);
         Course existing = courseRepository.findById(course.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("课程不存在！"));
         if (course.getCourseId() == null || course.getTitle() == null) {
@@ -79,5 +81,25 @@ public class CourseService {
             throw new ResourceConflictException("选课人数已空！");
         }
         return courseRepository.decreaseEnrollmentCount(courseId);
+    }
+    private void validateCourse(Course course, boolean isCreateing) {
+        if (course == null) {
+            throw new IllegalArgumentException("课程信息不能为空！");
+        }
+        if (course.getCourseId() == null || course.getCourseId().trim().isEmpty()) {
+            throw new IllegalArgumentException("课程代码不能为空！");
+        }
+        if (course.getTitle() == null || course.getTitle().trim().isEmpty()) {
+            throw new IllegalArgumentException("课程名称不能为空！");
+        }
+        if (course.getInstructor() == null) {
+            throw new IllegalArgumentException("授课教师不能为空！");
+        }
+        if (course.getScheduleSlot() == null) {
+            throw new IllegalArgumentException("课程时间安排不能为空！");
+        }
+        if (course.getCapacity() <= 0) {
+            throw new IllegalArgumentException("课程容量必须大于 0！");
+        }
     }
 }
