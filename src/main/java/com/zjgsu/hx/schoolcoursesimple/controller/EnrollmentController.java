@@ -24,12 +24,12 @@ public class EnrollmentController {
 
     @GetMapping("/student/{studentId}")
     public ApiResponse<List<Enrollment>> getEnrollmentsByStudentId(@PathVariable String studentId) {
-        return ApiResponse.success(enrollmentService.getEnrollmentsByStudentId(studentId));
+        return ApiResponse.success(enrollmentService.getEnrollmentsByStudent(studentId));
     }
 
     @GetMapping("/course/{courseId}")
     public ApiResponse<List<Enrollment>> getEnrollmentsByCourseId(@PathVariable String courseId) {
-        return ApiResponse.success(enrollmentService.getEnrollmentsByCourseId(courseId));
+        return ApiResponse.success(enrollmentService.getEnrollmentsByCourse(courseId));
     }
 
     @PostMapping

@@ -1,44 +1,46 @@
 package com.zjgsu.hx.schoolcoursesimple.repository;
 
 import com.zjgsu.hx.schoolcoursesimple.model.Student;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
-public class StudentRepository {
-    private final Map<String, Student> students = new ConcurrentHashMap<String, Student>();
+public interface StudentRepository extends JpaRepository<Student, String> {
 
-    public List<Student> findAll() {
-        return new ArrayList<Student>(students.values());
-    }
+    /**
+     * 按学号查询学生（用于登录或查找）
+     */
+    Optional<Student> findByStudentId(String studentId);
 
-    public Optional<Student> findById(String id) {
-        return Optional.ofNullable(students.get(id));
-    }
+    /**
+     * 按邮箱查询学生（用于判重或找回账号）
+     */
+    Optional<Student> findByEmail(String email);
 
-    public Optional<Student> findByStudentId(String studentId) {
-        return students.values().stream()
-                .filter(s -> s.getStudentId().equals(studentId))
-                .findFirst();
-    }
+    /**
+     * 检查学号是否存在（用于创建时判重）
+     */
+    boolean existsByStudentId(String studentId);
 
-    public Student save(Student student) {
-        students.put(student.getId(), student);
-        return student;
-    }
+    /**
+     * 检查邮箱是否存在（用于创建时判重）
+     */
+    boolean existsByEmail(String email);
 
-    public Student deleteById(String id) {
-        return students.remove(id);
-    }
+    /**
+     * 按专业查询学生（用于筛选）
+     */
+    List<Student> findByMajor(String major);
 
-    public Student deleteByStudentId(String studentId) {
-        Optional<Student> stuToDelete = this.findByStudentId(studentId);
-        if (stuToDelete.isPresent()) {
-            students.remove(stuToDelete.get().getStudentId());
-            return stuToDelete.get();
-        }
-        return null;
-    }
+    /**
+     * 按年级查询学生（用于筛选）
+     */
+    List<Student> findByGrade(int grade);
+
+    /**
+     * 根据学号删除学生（可选）
+     */
+    void deleteByStudentId(String studentId);
 }

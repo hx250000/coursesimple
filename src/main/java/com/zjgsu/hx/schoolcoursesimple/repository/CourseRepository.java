@@ -1,49 +1,41 @@
 package com.zjgsu.hx.schoolcoursesimple.repository;
 
 import com.zjgsu.hx.schoolcoursesimple.model.Course;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
-public class CourseRepository {
-    private final Map<String, Course> courses = new ConcurrentHashMap<String, Course>();
+public interface CourseRepository extends JpaRepository<Course, String> {
 
-    public List<Course> findAll() {
-        return new ArrayList<Course>(courses.values());
-    }
+    /**
+     * 按课程代码查询（唯一）
+     */
+    Optional<Course> findByCourseId(String courseId);
 
-    public Optional<Course> findById(String id) {
-        return Optional.ofNullable(courses.get(id));
-    }
+    /**
+     * 按课程标题关键字模糊查询（忽略大小写）
+     */
+    List<Course> findByTitleContainingIgnoreCase(String keyword);
 
-    public Optional<Course> findByCourseId(String courseId) {
-        return courses.values().stream()
-                .filter(s -> s.getCourseId().equals(courseId))
-                .findFirst();
-    }
+    /**
+     * 查询容量还有剩余的课程（capacity > enrolled）
+     * 用 JPQL 自定义查询
+     */
+    @Query("SELECT c FROM Course c WHERE c.enrolled < c.capacity")
+    List<Course> findCoursesWithAvailableSeats();
 
-    public Course save(Course course) {
-        return courses.put(course.getId(), course);
-    }
+    /**
+     * 按讲师编号查询课程
+     */
+    @Query("SELECT c FROM Course c WHERE c.instructor.instructorId = :instructorId")
+    List<Course> findByInstructorId(String instructorId);
 
-    public Course deleteById(String id) {
-        return courses.remove(id);
-    }
-
-    public int increaseEnrollmentCount(String id){
-        Course course = courses.get(id);
-        course.addEnrolled();
-        return course.getEnrolled();
-    }
-
-    public int decreaseEnrollmentCount(String id){
-        Course course = courses.get(id);
-        course.deleteEnrolled();
-        return course.getEnrolled();
-    }
+    /**
+     * 判重：课程编号是否存在
+     */
+    boolean existsByCourseId(String courseId);
 }

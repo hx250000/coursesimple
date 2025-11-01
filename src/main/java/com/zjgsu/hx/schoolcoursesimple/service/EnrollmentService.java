@@ -8,6 +8,7 @@ import com.zjgsu.hx.schoolcoursesimple.model.Student;
 import com.zjgsu.hx.schoolcoursesimple.repository.CourseRepository;
 import com.zjgsu.hx.schoolcoursesimple.repository.EnrollmentRepository;
 import com.zjgsu.hx.schoolcoursesimple.repository.StudentRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,19 +29,20 @@ public class EnrollmentService {
         this.courseRepository = courseRepository;
         this.courseService = courseService;
     }
+
     public List<Enrollment> findAll() {
         return enrollmentRepository.findAll();
     }
     /**
      * 创建选课记录（选课）
      */
+    @Transactional
     public Enrollment createEnrollment(String studentId, String courseId) {
         Student student = studentRepository.findByStudentId(studentId)
                 .orElseThrow(() -> new ResourceNotFoundException("学生不存在！"));
         Course course = courseRepository.findByCourseId(courseId)
                 .orElseThrow(() -> new ResourceNotFoundException("课程不存在!"));
-        boolean alreadyEnrolled = enrollmentRepository.findByStudentId(studentId).stream()
-                .anyMatch(e -> e.getCourseId().equals(courseId));
+        boolean alreadyEnrolled = enrollmentRepository.existsByStudentAndCourse(student, course);
         if (alreadyEnrolled) {
             throw new IllegalArgumentException("该学生已选过此课程!");
         }
@@ -49,35 +51,41 @@ public class EnrollmentService {
         }
 
         Enrollment enrollment = new Enrollment();
-        enrollment.setStudentId(studentId);
-        enrollment.setCourseId(courseId);
+        enrollment.setStudent(student);
+        enrollment.setCourse(course);
 
         enrollmentRepository.save(enrollment);
         courseService.increaseEnrollmentCount(courseId);
 
         return enrollment;
     }
-    public List<Enrollment> getEnrollmentsByStudentId(String studentId) {
+
+    public List<Enrollment> getEnrollmentsByStudent(String studentId) {
         // 确保学生存在
-        studentRepository.findByStudentId(studentId)
+        Student student=studentRepository.findByStudentId(studentId)
                 .orElseThrow(() -> new ResourceNotFoundException("学生不存在"));
-        return enrollmentRepository.findByStudentId(studentId);
+        return enrollmentRepository.findByStudent(student);
     }
-    public List<Enrollment> getEnrollmentsByCourseId(String courseId) {
+    public List<Enrollment> getEnrollmentsByCourse(String courseId) {
         // 确保课程存在
-        courseRepository.findById(courseId)
+        Course course=courseRepository.findById(courseId)
                 .orElseThrow(() -> new ResourceNotFoundException("课程不存在"));
-        return enrollmentRepository.findByCourseId(courseId);
+        return enrollmentRepository.findByCourse(course);
     }
     /*
      *删除选课记录（退课）
      */
+    @Transactional
     public Enrollment deleteEnrollment(String studentId, String courseId) {
         // 找到该学生的选课记录
-        Enrollment enrollment = enrollmentRepository.findByStudentId(studentId).stream()
-                .filter(e -> e.getCourseId().equals(courseId))
-                .findFirst()
-                .orElseThrow(() -> new ResourceNotFoundException("选课记录不存在!"));
+        Student student=studentRepository.findByStudentId(studentId)
+                .orElseThrow(()->new ResourceNotFoundException("学生不存在！"));
+        Course course=courseRepository.findByCourseId(courseId)
+                .orElseThrow(()->new ResourceNotFoundException("课程不存在！"));
+
+        Enrollment enrollment=enrollmentRepository.findByStudentAndCourse(student,course)
+                .orElseThrow(()->new ResourceNotFoundException("选课记录不存在！"));
+
         // 删除选课记录
         enrollmentRepository.deleteById(enrollment.getId());
         // 更新课程人数
@@ -89,7 +97,7 @@ public class EnrollmentService {
         Enrollment enrollment = enrollmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("选课记录不存在!"));
         enrollmentRepository.deleteById(id);
-        courseService.decreaseEnrollmentCount(enrollment.getCourseId());
+        courseService.decreaseEnrollmentCount(enrollment.getCourse().getId());
         return enrollment;
     }
 }

@@ -1,26 +1,46 @@
 package com.zjgsu.hx.schoolcoursesimple.model;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Entity
+@Table(name="course")
 public class Course {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID) //自动生成UUID主键
     private String id; //uuid
+
+    @Column(unique = true, nullable = false)
     private String courseId; //课程id
+
+    @Column(nullable = false)
     private String title; //课程名
+
+    @Embedded
     private Instructor instructor;
+
+    @Embedded
     private ScheduleSlot scheduleSlot;
+
     private int capacity;
     private int enrolled;
+
+    @Column(name="createdAt",updatable=false)
     private LocalDateTime createdAt;
 
+    @PrePersist
+    public void onCreate(){
+        createdAt = LocalDateTime.now();
+    }
+
     public Course() {
-        this.setId();
-        this.setCreatedAt();
+
     }
 
     public Course(String courseId, String title, Instructor instructor, ScheduleSlot scheduleSlot, int capacity) {
-        this.setId();
-        this.setCreatedAt();
+
         this.courseId = courseId;
         this.title = title;
         this.instructor = instructor;

@@ -1,0 +1,25 @@
+server:
+  port: 8080  # 项目运行端口
+
+spring:
+  application:
+    name: schoolcoursesimple
+  datasource:
+      url: jdbc:mysql://localhost:3306/course_db?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+      username: root
+      password: hbcpyx11
+  jpa:
+    hibernate:
+      ddl-auto: update          # 第一次开发可用 update，生成表结构
+    show-sql: true              # 控制台打印 SQL 语句
+    properties:
+      hibernate:
+        format_sql: true        # 格式化 SQL
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+
+logging:
+  level:
+    com.zjgsu.hx.schoolcoursesimple: INFO
+    org.springframework.web: INFO
+

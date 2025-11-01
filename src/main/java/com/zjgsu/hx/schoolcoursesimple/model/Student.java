@@ -1,25 +1,43 @@
 package com.zjgsu.hx.schoolcoursesimple.model;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Entity
+@Table(name = "student")
 public class Student {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+
+    @Column(unique = true, nullable = false)
     private String studentId;
+
+    @Column(nullable = false)
     private String name;
+
     private String major;
     private int grade;
+
+    @Column(nullable = false)
     private String email;
+
+    @Column(name="createdAt",updatable = false)
     private LocalDateTime createAt;
 
+    @PrePersist
+    public void onCreate() {
+        this.createAt = LocalDateTime.now();
+    }
+
     public Student() {
-        this.setId();
-        this.setCreateAt();
+
     }
 
     public Student(String studentId, String name, String major, int grade, String email) {
-        this.setId();
-        this.setCreateAt();
+
         this.studentId = studentId;
         this.name = name;
         this.major = major;

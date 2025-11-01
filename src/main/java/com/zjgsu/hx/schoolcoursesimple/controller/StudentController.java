@@ -33,8 +33,7 @@ public class StudentController {
 
     @PutMapping("/{id}")
     public ApiResponse<Student> updateStudent(@PathVariable String id, @RequestBody Student student) {
-        //student.setId(id);
-        return ApiResponse.success(studentService.updateStudent(student));
+        return ApiResponse.success(studentService.updateStudent(id,student));
     }
 
     @DeleteMapping("/{id}")

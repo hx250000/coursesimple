@@ -1,43 +1,46 @@
 package com.zjgsu.hx.schoolcoursesimple.model;
 
+import jakarta.persistence.Embeddable;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Embeddable
 public class Instructor {
-    private String id; //uuid
+    //private String id; //uuid
     private String instructorId; //教师id
     private String name; //
     private String email;
-    private LocalDateTime createAt;
+    //private LocalDateTime createAt;
 
     public Instructor() {
-        this.setId();
-        this.setCreateAt();
+        //this.setId();
+        //this.setCreateAt();
     }
 
     public Instructor(String instructorId, String name, String email) {
-        this.setId();
+        //this.setId();
         this.setInstructorId(instructorId);
         this.setName(name);
         this.setEmail(email);
-        this.setCreateAt();
+        //this.setCreateAt();
     }
 
-    public String getId() {
+    /*public String getId() {
         return id;
     }
 
     public void setId() {
         this.id = UUID.randomUUID().toString();
-    }
+    }*/
 
-    public LocalDateTime getCreateAt() {
+    /*public LocalDateTime getCreateAt() {
         return createAt;
     }
 
     public void setCreateAt() {
         this.createAt = LocalDateTime.now();
-    }
+    }*/
 
     public String getInstructorId() {
         return instructorId;

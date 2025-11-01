@@ -1,45 +1,48 @@
 package com.zjgsu.hx.schoolcoursesimple.model;
 
+import jakarta.persistence.Embeddable;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Embeddable
 public class ScheduleSlot {
-    private String id;
+    //private String id;
     private String dayOfWeek;       // MONDAY, TUESDAY 等
     private String startTime;       // "08:00"
     private String endTime;         // "10:00"
     private int expectedAttendance;
-    private LocalDateTime createAt;
+    //private LocalDateTime createAt;
 
     public ScheduleSlot() {
-        this.setId();
-        this.setCreateAt();
+        //this.setId();
+        //this.setCreateAt();
     }
 
     public ScheduleSlot(String dayOfWeek, String startTime, String endTime, int expectedAttendance) {
-        this.setId();
+        //this.setId();
         this.setDayOfWeek(dayOfWeek);
         this.setStartTime(startTime);
         this.setEndTime(endTime);
         this.setExpectedAttendance(expectedAttendance);
-        this.setCreateAt();
+        //this.setCreateAt();
     }
 
-    public String getId() {
+    /*public String getId() {
         return id;
     }
 
     public void setId() {
         this.id = UUID.randomUUID().toString();
-    }
+    }*/
 
-    public LocalDateTime getCreateAt() {
+    /*public LocalDateTime getCreateAt() {
         return createAt;
     }
 
     public void setCreateAt() {
         this.createAt = LocalDateTime.now();
-    }
+    }*/
 
     public String getDayOfWeek() {
         return dayOfWeek;

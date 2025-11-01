@@ -6,6 +6,7 @@ import com.zjgsu.hx.schoolcoursesimple.model.Course;
 import com.zjgsu.hx.schoolcoursesimple.model.ScheduleSlot;
 import com.zjgsu.hx.schoolcoursesimple.repository.CourseRepository;
 import com.zjgsu.hx.schoolcoursesimple.repository.EnrollmentRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,33 +24,39 @@ public class CourseService {
         return courseRepository.findAll();
     }
     public Course findById(String id) {
-        return courseRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("课程不存在！"));
+        return courseRepository.findById(id).
+                orElseThrow(()->new ResourceNotFoundException("课程不存在！"));
     }
     public Course createCourse(Course course) {
         validateCourse(course, true);
         if (course.getCourseId() == null || course.getTitle() == null) {
             throw new IllegalArgumentException("课程代码和名称不能为空！");
         }
-        boolean exists = courseRepository.findAll().stream()
-                .anyMatch(c -> c.getCourseId().equals(course.getCourseId()));
+        boolean exists=courseRepository.existsById(course.getCourseId());
         if (exists) {
             throw new IllegalArgumentException("课程代码已存在！");
         }
         return courseRepository.save(course);
     }
-    public Course updateCourse(Course course) {
-        validateCourse(course, false);
-        Course existing = courseRepository.findById(course.getId())
+
+    @Transactional
+    public Course updateCourse(String id,Course course) {
+
+        Course existing = courseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("课程不存在！"));
+        validateCourse(course, false);
         if (course.getCourseId() == null || course.getTitle() == null) {
             throw new IllegalArgumentException("课程代码和名称不能为空！");
         }
+
         ScheduleSlot slot=existing.getScheduleSlot();
+
         existing.setCourseId(course.getCourseId());
         existing.setTitle(course.getTitle());
         existing.setInstructor(course.getInstructor());
         existing.setCapacity(course.getCapacity());
         //existing.setScheduleSlot(course.getScheduleSlot());
+
         slot.setDayOfWeek(course.getScheduleSlot().getDayOfWeek());
         slot.setEndTime(course.getScheduleSlot().getEndTime());
         slot.setStartTime(course.getScheduleSlot().getStartTime());
@@ -58,31 +65,44 @@ public class CourseService {
 
         return courseRepository.save(existing);
     }
+
+    @Transactional
     public Course deleteById(String id) {
-        Course course = courseRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("课程不存在！"));
+        Course course = courseRepository.findById(id).
+                orElseThrow(()->new ResourceNotFoundException("课程不存在！"));
         boolean hasEnrollments = !enrollmentRepository
-                .findByCourseId(course.getId())
+                .findByCourse(course)
                 .isEmpty();
         if (hasEnrollments) {
             throw new ResourceConflictException("无法删除：该课程存在选课记录！");
         }
-        return courseRepository.deleteById(id);
+        courseRepository.deleteById(id);
+        return course;
     }
+
+    @Transactional
     public int increaseEnrollmentCount(String courseId) {
         Course course = this.findById(courseId);
         if (course.getEnrolled()>=course.getCapacity()){
             throw new ResourceConflictException("选课人数已满！");
         }
-        return courseRepository.increaseEnrollmentCount(courseId);
+        course.addEnrolled();
+        courseRepository.save(course);
+        return course.getEnrolled();
     }
+
+    @Transactional
     public int decreaseEnrollmentCount(String courseId) {
         Course course = this.findById(courseId);
         if (course.getEnrolled()<=0){
             throw new ResourceConflictException("选课人数已空！");
         }
-        return courseRepository.decreaseEnrollmentCount(courseId);
+        course.deleteEnrolled();
+        courseRepository.save(course);
+        return course.getEnrolled();
     }
-    private void validateCourse(Course course, boolean isCreateing) {
+
+    private void validateCourse(Course course, boolean isCreating) {
         if (course == null) {
             throw new IllegalArgumentException("课程信息不能为空！");
         }

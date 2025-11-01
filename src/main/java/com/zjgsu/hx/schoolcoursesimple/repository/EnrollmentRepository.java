@@ -1,50 +1,39 @@
 package com.zjgsu.hx.schoolcoursesimple.repository;
 
 import com.zjgsu.hx.schoolcoursesimple.model.Enrollment;
+import com.zjgsu.hx.schoolcoursesimple.model.Student;
+import com.zjgsu.hx.schoolcoursesimple.model.Course;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 @Repository
-public class EnrollmentRepository {
-    private final Map<String, Enrollment> enrollments=new ConcurrentHashMap<String,Enrollment>();
+public interface EnrollmentRepository extends JpaRepository<Enrollment, String> {
 
-    public List<Enrollment> findAll(){
-        return new ArrayList<Enrollment>(enrollments.values());
-    }
+    /**
+     * 按学生查询选课记录
+     */
+    List<Enrollment> findByStudent(Student student);
 
-    public void save(Enrollment enrollment) {
-        enrollments.put(enrollment.getId(), enrollment);
-    }
+    /**
+     * 按课程查询选课记录
+     */
+    List<Enrollment> findByCourse(Course course);
 
-    public Optional<Enrollment> findById(String id) {
-        return Optional.ofNullable(enrollments.get(id));
-    }
+    /**
+     * 按学生和课程联合查询（判断是否重复选课）
+     */
+    Optional<Enrollment> findByStudentAndCourse(Student student, Course course);
 
-    public List<Enrollment> findByStudentId(String studentId) {
-        return enrollments.values().stream()
-                .filter(s -> s.getStudentId().equals(studentId))
-                .collect(Collectors.toList());
-    }
+    /**
+     * 判断是否存在该选课关系
+     */
+    boolean existsByStudentAndCourse(Student student, Course course);
 
-    public List<Enrollment> findByCourseId(String courseId) {
-        return enrollments.values().stream()
-                .filter(e -> e.getCourseId().equals(courseId))
-                .collect(Collectors.toList());
-    }
-
-    public Optional<Enrollment> findByStudentAndCourse(String studentId, String courseId) {
-        return enrollments.values().stream()
-                .filter(e -> e.getStudentId().equals(studentId) && e.getCourseId().equals(courseId))
-                .findFirst();
-    }
-
-    public void deleteById(String id) {
-        enrollments.remove(id);
-    }
+    /**
+     * 删除某学生与课程的选课记录
+     */
+    void deleteByStudentAndCourse(Student student, Course course);
 }

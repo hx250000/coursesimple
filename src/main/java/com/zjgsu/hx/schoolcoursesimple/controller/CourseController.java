@@ -33,7 +33,7 @@ public class CourseController {
 
     @PutMapping("/{id}")
     public ApiResponse<Course> updateCourse(@PathVariable String id, @RequestBody Course course) {
-        return ApiResponse.success(courseService.updateCourse(course));
+        return ApiResponse.success(courseService.updateCourse(id,course));
     }
 
     @DeleteMapping("/{id}")
