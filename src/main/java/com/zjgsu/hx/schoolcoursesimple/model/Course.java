@@ -12,7 +12,7 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.UUID) //自动生成UUID主键
     private String id; //uuid
 
-    @Column(unique = true, nullable = false)
+    @Column(name = "course_id",unique = true, nullable = false)
     private String courseId; //课程id
 
     @Column(nullable = false)
@@ -121,4 +121,7 @@ public class Course {
         this.createdAt = LocalDateTime.now();
     }
 
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 }

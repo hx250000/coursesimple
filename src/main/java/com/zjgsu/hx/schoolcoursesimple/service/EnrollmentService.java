@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EnrollmentService {
@@ -40,8 +41,12 @@ public class EnrollmentService {
     public Enrollment createEnrollment(String studentId, String courseId) {
         Student student = studentRepository.findByStudentId(studentId)
                 .orElseThrow(() -> new ResourceNotFoundException("学生不存在！"));
-        Course course = courseRepository.findByCourseId(courseId)
-                .orElseThrow(() -> new ResourceNotFoundException("课程不存在!"));
+
+        Optional<Course> courseOpt = courseRepository.findByCourseId(courseId);
+        System.out.println("正在查询课程 courseId=" + courseId + "，查询结果=" + courseOpt);
+        Course course = courseOpt.orElseThrow(() -> new ResourceNotFoundException("课程不存在!"));
+        /*Course course = courseRepository.findByCourseId(courseId)
+                .orElseThrow(() -> new ResourceNotFoundException("课程不存在!"));*/
         boolean alreadyEnrolled = enrollmentRepository.existsByStudentAndCourse(student, course);
         if (alreadyEnrolled) {
             throw new IllegalArgumentException("该学生已选过此课程!");
@@ -78,6 +83,7 @@ public class EnrollmentService {
     @Transactional
     public Enrollment deleteEnrollment(String studentId, String courseId) {
         // 找到该学生的选课记录
+        System.out.printf("正在删除选课记录，学生=%s,课程=%s",studentId,courseId);
         Student student=studentRepository.findByStudentId(studentId)
                 .orElseThrow(()->new ResourceNotFoundException("学生不存在！"));
         Course course=courseRepository.findByCourseId(courseId)

@@ -60,6 +60,7 @@ public class Enrollment {
     public void setStatus(Status status) { this.status = status; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt() { this.createdAt = LocalDateTime.now(); }
+    public void setCreatedAt(LocalDateTime createdAt) {this.createdAt = createdAt;}
 
 
 }

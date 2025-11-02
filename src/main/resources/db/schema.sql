@@ -1,3 +1,5 @@
+USE course_db;
+
 -- 删除旧表（防止重复执行报错）
 DROP TABLE IF EXISTS enrollment;
 DROP TABLE IF EXISTS student;

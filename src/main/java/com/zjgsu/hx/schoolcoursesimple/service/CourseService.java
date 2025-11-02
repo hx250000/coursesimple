@@ -55,6 +55,7 @@ public class CourseService {
         existing.setTitle(course.getTitle());
         existing.setInstructor(course.getInstructor());
         existing.setCapacity(course.getCapacity());
+
         //existing.setScheduleSlot(course.getScheduleSlot());
 
         slot.setDayOfWeek(course.getScheduleSlot().getDayOfWeek());
@@ -82,7 +83,8 @@ public class CourseService {
 
     @Transactional
     public int increaseEnrollmentCount(String courseId) {
-        Course course = this.findById(courseId);
+        Course course = courseRepository.findByCourseId(courseId).
+                orElseThrow(()->new ResourceNotFoundException("课程不存在！"));
         if (course.getEnrolled()>=course.getCapacity()){
             throw new ResourceConflictException("选课人数已满！");
         }
@@ -93,7 +95,8 @@ public class CourseService {
 
     @Transactional
     public int decreaseEnrollmentCount(String courseId) {
-        Course course = this.findById(courseId);
+        Course course = courseRepository.findByCourseId(courseId).
+                orElseThrow(()->new ResourceNotFoundException("课程不存在！"));
         if (course.getEnrolled()<=0){
             throw new ResourceConflictException("选课人数已空！");
         }

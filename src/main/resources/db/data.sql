@@ -1,4 +1,4 @@
-USE course_db;enrollment
+USE course_db;
 -- 初始化学生表
 INSERT INTO student (id, student_id, name, major, grade, email, created_at) VALUES
 (UUID(), '20250001', '张三', '计算机科学与技术', 3, 'zhangsan@zjgsu.edu.cn', NOW()),
