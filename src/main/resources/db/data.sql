@@ -1,3 +1,4 @@
+USE course_db;enrollment
 -- 初始化学生表
 INSERT INTO student (id, student_id, name, major, grade, email, created_at) VALUES
 (UUID(), '20250001', '张三', '计算机科学与技术', 3, 'zhangsan@zjgsu.edu.cn', NOW()),
@@ -12,7 +13,7 @@ INSERT INTO course (id, course_id, title, capacity, enrolled, email, instructor_
 
 -- 初始化选课表（学生选课程）
 -- 使用子查询确保外键一致
-INSERT INTO enrollment (id, studentid, courseid, status, created_at)
+INSERT INTO enrollment (id, student_id, course_id, status, created_at)
 VALUES
 (UUID(),
  (SELECT id FROM student WHERE student_id='20250001'),
