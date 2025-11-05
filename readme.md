@@ -62,7 +62,15 @@ resources
 | id | student_id | course_id | status | created_at |
 
 # 四、接口说明（RESTful Api）
-均通过Repository连接MySQL数据库访问，实现数据持久化
+## 系统结构
+### Controller层
+接收 HTTP 请求、调用 Service 层、返回统一响应
+### Service层
+实现业务逻辑、数据验证、规则控制
+### Repository层
+连接数据库，负责数据的存储与读取
+### Model层
+系统所需的数据结构模型
 ## 1. 学生模块 `/students`
 
 | 操作         | 方法   | URL              | 说明                     |
