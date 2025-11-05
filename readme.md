@@ -61,7 +61,7 @@ resources
 - Enrollment
 | id | student_id | course_id | status | created_at |
 
-# 四、接口说明（RESTful Api）
+# 五、接口说明（RESTful Api）
 ## 系统结构
 ### Controller层
 接收 HTTP 请求、调用 Service 层、返回统一响应
@@ -131,7 +131,7 @@ resources
 | ------------ | ------ | --------------- | ---------------------------- |
 | 查询数据库连接状态     | GET    | `/db`      | 获取数据库当前连接状态                 |
 
-# 五、异常处理机制
+# 六、异常处理机制
 
 系统通过 `GlobalExceptionHandler` 统一捕获异常并以 `ApiResponse` 格式返回。
 
@@ -153,7 +153,7 @@ resources
 }
 ```
 
-# 六、运行环境与配置
+# 七、运行环境与配置
 
 | 项目        | 版本             |
 | ----------- | ---------------- |
