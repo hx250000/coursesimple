@@ -136,7 +136,7 @@ resources
 ```
 {
   "code": 200,
-  "message": "𨻵 数据库连接正常",
+  "message": "✅ 数据库连接正常",
   "data": null,
   "timestamp": "2025-11-02T22:35:08.365"
 }
