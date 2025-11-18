@@ -11,7 +11,8 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root123
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     networks:
       - coursehub-network
 
@@ -27,6 +28,11 @@ services:
       - mysql-data:/var/lib/mysql
     networks:
       - coursehub-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 networks:
   coursehub-network:
