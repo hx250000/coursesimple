@@ -11,6 +11,8 @@ import java.util.Optional;
 @Repository
 public interface CourseRepository extends JpaRepository<Course, String> {
 
+
+
     /**
      * 按课程代码查询（唯一）
      */

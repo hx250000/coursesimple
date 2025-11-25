@@ -32,7 +32,7 @@ public class CourseService {
         if (course.getCourseId() == null || course.getTitle() == null) {
             throw new IllegalArgumentException("课程代码和名称不能为空！");
         }
-        boolean exists=courseRepository.existsById(course.getCourseId());
+        boolean exists=courseRepository.existsByCourseId(course.getCourseId());
         if (exists) {
             throw new IllegalArgumentException("课程代码已存在！");
         }
